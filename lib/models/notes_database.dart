@@ -40,5 +40,20 @@ class NotesDatabase {
     currentNotes.addAll(fetchedNotes as Iterable<Notes>);
   }
   //UPDATE- a note in the db
+  Future<void> updateNotes(int id, String newText) async{
+    final existingNote = await isar.notes.get(id);
+    if(existingNote != null){
+      existingNote.text = newText;
+      await isar.writeTxn(()=>isar.notes.put(existingNote));
+      await fetchNotes();
+    }
+
+  }
+
   //DELETE- a note from db
+
+   Future<void> deleteNotes(int id) async{
+    await isar.writeTxn(()=> isar.notes.delete(id));
+    await fetchNotes();
+   }
 }
